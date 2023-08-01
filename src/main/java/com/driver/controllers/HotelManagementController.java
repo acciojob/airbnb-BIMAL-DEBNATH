@@ -26,8 +26,8 @@ public class HotelManagementController {
         //in all other cases return SUCCESS after successfully adding the hotel to the hotelDb.
 
         HotelManagementService hotelManagementService=new HotelManagementService();
-        if(hotel==null || hotel.getHotelName().equals("")){
-            return "";
+        if(hotel==null || hotel.getHotelName()==null){
+            return "FAILURE";
         }
        return hotelManagementService.addHotel(hotel);
 

@@ -27,7 +27,7 @@ public class HotelManagementRepository {
         } else if (map.containsKey(hotelName)) {
             return "FAILURE";
         }else {
-            return "";
+            return "FAILURE";
         }
 
     }
@@ -39,48 +39,30 @@ public class HotelManagementRepository {
 
 
 
-    private String lexicographicallySmaller() {
-        List<String>list=new ArrayList<>();
-        for(String k:map.keySet()){
-            list.add(map.get(k).getHotelName());
-        }
-
-       return findMin(list);
-
-    }
     public String getHotelWithMostFacilities() {
 
-        boolean flag=false;
-        HashMap<Integer,Integer>tm=new HashMap<>();
-        int big=0;
+
+        int facilities=0;
         String hotelName="";
 
-        for(String h:map.keySet()){
-            List<Facility> fac=map.get(h).getFacilities();
-            int size= fac.size();
-            if(tm.get(size)>0){
-                return lexicographicallySmaller();
-            }
+        for(String currHotel:map.keySet()){
 
-            if(size>big){
-                big=size;
-                hotelName=map.get(h).getHotelName();
+            if(currHotel.length()<facilities){
+                facilities=currHotel.length();
+                hotelName=currHotel;
+            }else if(currHotel.length()==facilities){
+                if(currHotel.compareTo(hotelName)<0){
+                    hotelName=currHotel;
+                }
             }
-            tm.put(size, tm.getOrDefault(size, 0)+1);
         }
 
-        if(big==0){
-            return "";
-        }
 
         return hotelName;
     }
 
 
-
-
-
-
+/*
 
     public static String findMin(List<String> list) {
         // If the list is empty, return null
@@ -105,22 +87,24 @@ public class HotelManagementRepository {
         return min;
     }
 
-
+*/
 
 
     public int bookARoom(Booking booking) {
 
        String corrId=String.valueOf( UUID.randomUUID());
 
-         Booking s=new Booking(corrId,booking.getBookingAadharCard(), booking.getNoOfRooms(),booking.getBookingPersonName(), booking.getHotelName());
-
-         bookingMap.put(corrId,s);
 
          int vt=map.get(booking.getHotelName()).getAvailableRooms();
 
          if(vt<booking.getNoOfRooms()){
              return -1;
          }
+        Hotel team= map.get(booking.getHotelName());
+         team.setAvailableRooms(vt-booking.getNoOfRooms());
+        Booking s=new Booking(corrId,booking.getBookingAadharCard(), booking.getNoOfRooms(),booking.getBookingPersonName(), booking.getHotelName());
+
+        bookingMap.put(corrId,s);
 
          int amount=booking.getNoOfRooms() * map.get(booking.getHotelName()).getPricePerNight();
 
